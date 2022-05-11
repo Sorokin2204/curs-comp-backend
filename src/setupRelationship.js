@@ -28,6 +28,7 @@ const setupRelationship = (db) => {
   db.attributes.belongsToMany(db.products, { through: { model: db.attributeNumbers, unique: false }, foreignKey: 'attributeId' });
   // MANY ATTRIBUTE_SELECT_PRODUCTS  -- MANY PRODUCTS
   db.products.belongsToMany(db.attributeOptions, { through: { model: db.attributeSelects, unique: false }, foreignKey: 'productId' });
+
   db.attributeOptions.belongsToMany(db.products, { through: { model: db.attributeSelects, unique: false }, foreignKey: 'optionId' });
   // MANY PRODUCTS  -- MANY ORDERS
   db.products.belongsToMany(db.orders, { through: { model: db.productOrders, unique: false }, foreignKey: 'productId' });

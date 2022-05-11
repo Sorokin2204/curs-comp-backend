@@ -46,6 +46,16 @@ class CategoryController {
       });
     }
   }
+  async getCategories(req, res) {
+    try {
+      const categories = await Category.findAll();
+      res.json(categories);
+    } catch (error) {
+      res.status(500).send({
+        message: error.message || 'Непредвиденная ошибка',
+      });
+    }
+  }
 }
 
 module.exports = new CategoryController();

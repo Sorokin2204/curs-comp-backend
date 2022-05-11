@@ -17,7 +17,7 @@ const sequelize = new Sequelize('curs-comp', 'root', 'pass', {
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
-db.sequelize.drop();
+// db.sequelize.drop();
 
 //MODELS
 db.users = require('./user.model')(sequelize, Sequelize);

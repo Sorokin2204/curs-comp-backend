@@ -4,10 +4,10 @@ const User = db.users;
 class UserController {
   async createUser(req, res) {
     const user = {
-      type: 'adminn',
+      type: 'client',
       password: 'pass',
-      login: 'new login',
-      fullName: 'fFFF lfsd',
+      login: 'new_login',
+      fullName: 'Лутько Владимир Петрович',
     };
     User.create(user)
       .then((data) => {

@@ -48,6 +48,17 @@ class BrandController {
       });
     }
   }
+
+  async getBrands(req, res) {
+    try {
+      const brands = await Brand.findAll();
+      res.json(brands);
+    } catch (error) {
+      res.status(500).send({
+        message: error.message || 'Непредвиденная ошибка',
+      });
+    }
+  }
 }
 
 module.exports = new BrandController();

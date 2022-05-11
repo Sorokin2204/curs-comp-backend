@@ -9,6 +9,9 @@ module.exports = (sequelize, Sequelize) => {
     login: {
       type: Sequelize.STRING,
     },
+    phone: {
+      type: Sequelize.INTEGER,
+    },
     password: {
       type: Sequelize.STRING,
     },

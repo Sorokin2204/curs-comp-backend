@@ -12,9 +12,6 @@ class ProductService {
     try {
     } catch (error) {}
     for (let { id: attributeId, value, type } of attributes) {
-      if (!attributeId || value === undefined) {
-        throw new Error('Неправильный формат входных данных');
-      }
       switch (type) {
         case 'text':
           AttributeText.create({ productId, attributeId, value });
