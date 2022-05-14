@@ -57,6 +57,18 @@ class OrderController {
     }
   }
 
+  async getUserOrders(req, res) {
+    try {
+      const { userId } = req.params;
+      const ordersFind = await Order.findAll({ where: { userId } });
+      res.json(ordersFind);
+    } catch (error) {
+      res.status(500).send({
+        message: error.message || 'Непредвиденная ошибка',
+      });
+    }
+  }
+
   async getOrders(req, res) {
     try {
       const orders = await Order.findAll({

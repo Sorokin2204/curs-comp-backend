@@ -40,6 +40,7 @@ class BrandController {
   async deleteBrand(req, res) {
     try {
       const { id } = req.body;
+      await Brand.update({ deleted: true }, { where: { id } });
       const deleteProduct = await Product.update({ deleted: true }, { where: { brandId: id } });
       res.json(deleteProduct);
     } catch (error) {
@@ -51,7 +52,7 @@ class BrandController {
 
   async getBrands(req, res) {
     try {
-      const brands = await Brand.findAll();
+      const brands = await Brand.findAll({ where: { deleted: false } });
       res.json(brands);
     } catch (error) {
       res.status(500).send({

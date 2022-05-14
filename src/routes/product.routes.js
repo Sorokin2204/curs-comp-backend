@@ -20,4 +20,7 @@ router.post('/product/create', upload.single('image'), productController.createP
 router.post('/product/update', upload.single('image'), productController.updateProduct);
 router.post('/product/delete', productController.deleteProduct);
 router.get('/product/list', productController.getProducts);
+router.get('/product/:productId', productController.getSingleProduct);
+router.get('/product/search/:searchText', productController.searchProducts);
+
 module.exports = router;

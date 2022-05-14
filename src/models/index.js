@@ -32,6 +32,7 @@ db.attributeOptions = require('./attributeOption.model')(sequelize, Sequelize);
 db.products = require('./product.model')(sequelize, Sequelize);
 db.orders = require('./order.model')(sequelize, Sequelize);
 db.productOrders = require('./productOrder.model')(sequelize, Sequelize);
+db.tokens = require('./token.model')(sequelize, Sequelize);
 
 setupRelationship(db);
 

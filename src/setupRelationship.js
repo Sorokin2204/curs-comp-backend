@@ -2,6 +2,9 @@ const setupRelationship = (db) => {
   // ONE CATEGORY -- MANY ATTRIBUTES
   db.categories.hasMany(db.attributes);
   db.attributes.belongsTo(db.categories);
+  // ONE TOKEN  -- ONE USER
+  db.users.hasOne(db.tokens);
+  db.tokens.belongsTo(db.users);
   // ONE ATTRIBUTE  -- MANY ATTRIBUTE_OPTIONS
   db.attributes.hasMany(db.attributeOptions);
   db.attributeOptions.belongsTo(db.attributes);

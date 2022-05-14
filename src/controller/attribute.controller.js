@@ -75,9 +75,13 @@ class AttributeController {
         let selectAttributes = await AttributeSelect.findAll({ raw: true, where: { productId } });
         const numberAttributes = await AttributeNumber.findAll({ raw: true, where: { productId } });
 
-        const findOptions = await AttributeOption.findAll({ raw: true, where: { id: selectAttributes.map((attrSelect) => attrSelect.optionId) } });
-        selectAttributes = selectAttributes.map((attrSelect) => ({ id: findOptions.find((optFind) => optFind.id === attrSelect.optionId).attributeId, value: attrSelect.optionId }));
-        productAttributes = [...convertToSimpleAttributes(textAttributes), ...convertToSimpleAttributes(checkboxAttributes), ...selectAttributes, ...convertToSimpleAttributes(numberAttributes)];
+        const findOptions = await AttributeOption.findAll({ include: Attribute, raw: true, where: { id: selectAttributes.map((attrSelect) => attrSelect.optionId) } });
+        selectAttributes = selectAttributes.map((attrSelect) => {
+          const findOpt = findOptions.find((optFind) => optFind.id === attrSelect.optionId);
+
+          return { id: findOpt.attributeId, label: findOpt['attribute.name'], optionLabel: findOpt.name, value: attrSelect.optionId };
+        });
+        productAttributes = [...(await convertToSimpleAttributes(textAttributes)), ...(await convertToSimpleAttributes(checkboxAttributes, 'checkbox')), ...selectAttributes, ...(await convertToSimpleAttributes(numberAttributes))];
         res.send(productAttributes);
       }
     } catch (error) {
@@ -88,7 +92,12 @@ class AttributeController {
     }
   }
 }
-function convertToSimpleAttributes(attrs) {
-  return attrs.map((attr) => ({ id: attr.attributeId, value: attr.value }));
+async function convertToSimpleAttributes(attrs, type) {
+  const newAttrs = [];
+  for (let attr of attrs) {
+    const attrName = await Attribute.findOne({ where: { id: attr.attributeId } });
+    newAttrs.push({ id: attr.attributeId, label: attrName.name, value: type ? !!attr.value : attr.value });
+  }
+  return newAttrs;
 }
 module.exports = new AttributeController();

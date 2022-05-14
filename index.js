@@ -10,6 +10,36 @@ const attributeRouter = require('./src/routes/attribute.routes');
 const productRouter = require('./src/routes/product.routes');
 const orderRouter = require('./src/routes/order.routes');
 const reset = require('./src/setup');
+const http = require('http');
+const server = http.createServer(app);
+const io = require('socket.io')(server, {
+  cors: {
+    origin: '*',
+  },
+});
+let interval;
+io.on('connection', (socket) => {
+  console.log('a user connected');
+});
+server.listen(4001, () => console.log(`Listening on port ${4001}`));
+
+io.on('connection', (socket) => {
+  console.log('New client connected');
+  socket.on('CREATE_ORDER', (sockett) => {
+    console.log('CREATE ORDER ');
+    io.emit('REFRESH_ORDERS');
+  });
+  socket.on('disconnect', () => {
+    console.log('Client disconnected');
+    clearInterval(interval);
+  });
+});
+
+const getApiAndEmit = (socket) => {
+  const response = new Date();
+  // Emitting a new message. Will be consumed by the client
+  socket.emit('FromAPI', response);
+};
 
 var corsOptions = {
   origin: 'http://localhost:3000',

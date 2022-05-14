@@ -5,6 +5,10 @@ module.exports = (sequelize, Sequelize) => {
       unique: true,
       allowNull: false,
     },
+    deleted: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+    },
   });
   return Category;
 };

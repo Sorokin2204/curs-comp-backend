@@ -1,5 +1,6 @@
 const db = require('../models');
 const productService = require('../services/product.service');
+const { Op } = require('sequelize');
 const Product = db.products;
 const Category = db.categories;
 const Brand = db.brands;
@@ -63,7 +64,7 @@ class ProductController {
     try {
       const { id } = req.body;
       const deleteProduct = await Product.update({ deleted: true }, { where: { id } });
-      res.json(deleteProduct);
+      res.json({ message: 'Success' });
     } catch (error) {
       res.status(500).send({
         message: error.message || 'Непредвиденная ошибка',
@@ -72,8 +73,42 @@ class ProductController {
   }
   async getProducts(req, res) {
     try {
-      const products = await Product.findAll({ include: [Category, Brand] });
+      const { categoryId, limit, exclude, include, sort } = req.query;
+      const products = await Product.findAll({
+        include: [Category, Brand],
+        where: { deleted: false },
+        ...(categoryId && { where: { deleted: false, categoryId, ...(exclude && { id: { [Op.not]: exclude } }) } }),
+        ...(limit && { limit: parseInt(limit) }),
+        ...(include && { where: { deleted: false, id: include } }),
+        ...(sort && { order: [['createdAt', 'DESC']] }),
+      });
       res.json(products);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send({
+        message: error.message || 'Непредвиденная ошибка',
+      });
+    }
+  }
+
+  async getSingleProduct(req, res) {
+    try {
+      const { productId } = req.params;
+      const productFind = await Product.findOne({ include: [Brand, Category], where: { id: productId, deleted: false } });
+      res.json(productFind);
+    } catch (error) {
+      res.status(500).send({
+        message: error.message || 'Непредвиденная ошибка',
+      });
+    }
+  }
+
+  async searchProducts(req, res) {
+    try {
+      const { searchText } = req.params;
+      const searchProducts = await Product.findAll({ where: { deleted: false, name: { [Op.like]: `%${searchText}%` } } });
+
+      res.json(searchProducts);
     } catch (error) {
       res.status(500).send({
         message: error.message || 'Непредвиденная ошибка',

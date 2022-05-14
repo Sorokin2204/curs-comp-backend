@@ -1,5 +1,6 @@
 const db = require('../models');
 const Category = db.categories;
+const Product = db.products;
 
 class CategoryController {
   async createCategory(req, res) {
@@ -38,6 +39,7 @@ class CategoryController {
   async deleteCategory(req, res) {
     try {
       const { id } = req.body;
+      await Category.update({ deleted: true }, { where: { id } });
       const deleteProduct = await Product.update({ deleted: true }, { where: { categoryId: id } });
       res.json(deleteProduct);
     } catch (error) {
@@ -48,7 +50,7 @@ class CategoryController {
   }
   async getCategories(req, res) {
     try {
-      const categories = await Category.findAll();
+      const categories = await Category.findAll({ where: { deleted: false } });
       res.json(categories);
     } catch (error) {
       res.status(500).send({

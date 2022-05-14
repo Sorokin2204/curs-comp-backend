@@ -1,6 +1,7 @@
 const db = require('../models');
 const Order = db.orders;
-const ProductOrder = db.productOrders;
+const ProductOrder = db.productOrders; 
+const Product = db.products; 
 
 class OrderService {
   async createOrder(userId, products) {
@@ -17,9 +18,10 @@ class OrderService {
 
   async createProductOrders(orderId, products) {
     for (let product of products) {
+      const findProduct = await Product.findOne({ where: { id: product.id } });
       const productOrder = {
         productId: product.id,
-        price: product.price,
+        price: findProduct.price,
         quantity: product.quantity,
         orderId,
       };
